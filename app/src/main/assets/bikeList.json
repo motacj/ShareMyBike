@@ -1,0 +1,41 @@
+[{
+    "image": "bike1.jpg",
+    "owner": "Francesco Lombardi",
+    "description": "Nice bike, 27' wheels",
+    "city": "Milan",
+    "location": "Via Filippo Carcano, 26",
+    "email": "francesco.lombardi@example.com"
+  },
+  {
+    "image": "bike2.jpg",
+    "owner": "Hipólito de Castro",
+    "description": "Always garaged, never dropped or ridden in the rain.",
+    "city": "Talavera",
+    "location": "Avenida de Francisco Aguirre, 22",
+    "email": "hipolito.castro@example.com"
+  },
+  {
+    "image": "bike3.jpg",
+    "owner": "Hans Gunter Egelhoff",
+    "description": "Sturdy bike, perfect for mountains",
+    "city": "Mönchengladbach",
+    "location": "Eickenerstrasse 227",
+    "email": "hans.egelhoff@example.com"
+  },
+  {
+    "image": "bike4.jpg",
+    "owner": "Antony Schooling",
+    "description": "small bike for long rides",
+    "city": "Lyon",
+    "location": "Chemin du Convent, 176",
+    "email": "antony.schooling@example.com"
+  },
+  {
+    "image": "bike5.jpg",
+    "owner": "Antony Schooling",
+    "description": "small bike for long rides",
+    "city": "Lyon",
+    "location": "Chemin du Convent, 176",
+    "email": "antony.schooling@example.com"
+  }
+]
