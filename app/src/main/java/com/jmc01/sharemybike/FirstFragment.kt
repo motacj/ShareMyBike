@@ -36,7 +36,7 @@ class FirstFragment : Fragment() {
         txtDate = view.findViewById<TextView>(R.id.txtDate)
 
         // Sigancion de la referencia: btnBuscarBicicletas apunta al ID btnBuscarBicicletas
-        val btnBuscarBicicletas = view.findViewById<Button>(R.id.btnBuscarBicicletas)
+        //val btnBuscarBicicletas = view.findViewById<Button>(R.id.btnBuscarBicicletas)
 
 
 
@@ -51,10 +51,10 @@ class FirstFragment : Fragment() {
             findNavController().navigate(R.id.action_FirstFragment_to_ItemFragment)
         }
 
-        btnBuscarBicicletas.setOnClickListener {
-            BikesContent.selectedDate = txtDate.text.toString().replace("Fecha seleccionada: ", "")
+        //btnBuscarBicicletas.setOnClickListener {
+       //     BikesContent.selectedDate = txtDate.text.toString().replace("Fecha seleccionada: ", "")
 
-        }
+        //}
     }
 
     // Método para actualizar el TextView

@@ -20,7 +20,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_bike" />
-
+    <!--
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -31,5 +31,5 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
         app:srcCompat="@android:drawable/ic_dialog_email" />
-
+    -->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

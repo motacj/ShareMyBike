@@ -1,4 +1,6 @@
-[{
+{
+  "bike_list": [
+    {
     "image": "bike1.jpg",
     "owner": "Francesco Lombardi",
     "description": "Nice bike, 27' wheels",
@@ -38,4 +40,4 @@
     "location": "Chemin du Convent, 176",
     "email": "antony.schooling@example.com"
   }
-]
+]}
