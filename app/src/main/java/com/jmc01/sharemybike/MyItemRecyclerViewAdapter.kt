@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.content.Intent
+import android.net.Uri
+
 // Importamos nuestra clase de datos
 import com.jmc01.sharemybike.ui.theme.BikesContent
 
@@ -38,9 +41,50 @@ class MyItemRecyclerViewAdapter(
             // Un icono de alerta como fallback si la imagen no existe
             holder.photoView.setImageResource(android.R.drawable.ic_dialog_alert)
         }
+
+        // Configurar el click listener en el icono de email
+        holder.emailIconView.setOnClickListener {
+            sendBikeReservationEmail(holder.itemView, item)
+        }
+
+        // También permitir click en toda la fila
+        holder.itemView.setOnClickListener {
+            sendBikeReservationEmail(it, item)
+        }
+
+
     }
 
     override fun getItemCount(): Int = values.size
+    // Función para enviar el email de reserva
+    private fun sendBikeReservationEmail(view: View, bike: BikesContent.Bike) {
+        // Obtener la fecha seleccionada (si existe)
+        val selectedDate = BikesContent.selectedDate ?: "a date to be confirmed"
+
+        // Construir el cuerpo del email
+        val emailBody = """
+        Dear Mr/Mrs ${bike.owner}:
+        
+        I'd like to use your bike at <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>b</mi><mi>i</mi><mi>k</mi><mi>e</mi><mi mathvariant="normal">.</mi><mi>l</mi><mi>o</mi><mi>c</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow><mo stretchy="false">(</mo></mrow><annotation encoding="application/x-tex">{bike.location} (</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">bik</span><span class="mord mathnormal">e</span><span class="mord">.</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">oc</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span></span><span class="mopen">(</span></span></span></span>{bike.city})
+        for the following date: $selectedDate
+        
+        Can you confirm its availability?
+        
+        Kindest regards
+    """.trimIndent()
+
+        // Crear el Intent implícito con mailto:
+        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:${bike.email}")
+            putExtra(Intent.EXTRA_SUBJECT, "Bike Reservation Request - ${bike.city}")
+            putExtra(Intent.EXTRA_TEXT, emailBody)
+        }
+
+        // Verificar que hay una app de email disponible
+        if (emailIntent.resolveActivity(view.context.packageManager) != null) {
+            view.context.startActivity(emailIntent)
+        }
+    }
 
     // 3. Clase ViewHolder: Almacena las referencias a los componentes de UI de la fila
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
