@@ -14,7 +14,8 @@ import com.jmc01.sharemybike.ui.theme.BikesContent
 
 // Recibe la lista de objetos Bike en el constructor
 class MyItemRecyclerViewAdapter(
-    private val values: List<BikesContent.Bike>
+    private val values: List<BikesContent.Bike>,
+    private val onBikeClick: (BikesContent.Bike) -> Unit//*****************
 ) : RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder>() {
 
     // 1. Infla el layout de la fila (fragment_item.xml)
@@ -42,16 +43,9 @@ class MyItemRecyclerViewAdapter(
             holder.photoView.setImageResource(android.R.drawable.ic_dialog_alert)
         }
 
-        // Configurar el click listener en el icono de email
-        holder.emailIconView.setOnClickListener {
-            sendBikeReservationEmail(holder.itemView, item)
-        }
 
-        // También permitir click en toda la fila
-        holder.itemView.setOnClickListener {
-            sendBikeReservationEmail(it, item)
-        }
-
+        holder.emailIconView.setOnClickListener { onBikeClick(item) }
+        holder.itemView.setOnClickListener { onBikeClick(item) }
 
     }
 
@@ -75,14 +69,14 @@ class MyItemRecyclerViewAdapter(
 
         // Crear el Intent implícito con mailto:
         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:${bike.email}")
+            data = Uri.parse("mailto: atom.susej@gmail.com")
             putExtra(Intent.EXTRA_SUBJECT, "Bike Reservation Request - ${bike.city}")
             putExtra(Intent.EXTRA_TEXT, emailBody)
         }
 
         // Verificar que hay una app de email disponible
         if (emailIntent.resolveActivity(view.context.packageManager) != null) {
-            view.context.startActivity(emailIntent)
+            view.context.startActivity(Intent.createChooser(emailIntent, "Send email"))
         }
     }
 
