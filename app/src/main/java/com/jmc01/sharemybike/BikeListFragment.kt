@@ -24,14 +24,13 @@ class BikeListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
 
         // Configurar el RecyclerView
-        // 🚨 CRÍTICO: Si el ID de tu RecyclerView en fragment_item_list.xml no es 'list', usa findViewByID
         val recyclerView = if (view is RecyclerView) view else view.findViewById<RecyclerView>(R.id.list)
 
         if (recyclerView != null) {
             with(recyclerView) {
                 layoutManager = LinearLayoutManager(context)
 
-                // ⭐ PUNTO CLAVE: Inicializa el Adaptador con los datos cargados.
+                // Inicializa el Adaptador con los datos cargados.
                 adapter = MyItemRecyclerViewAdapter(BikesContent.ITEMS) { bike ->
                     sendBikeReservationEmail(bike)
                 }

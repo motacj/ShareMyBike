@@ -1,96 +1,89 @@
-// Define el paquete del archivo.
+// Paquete al que pertenece este archivo.
+// Sirve para organizar el proyecto.
 package com.jmc01.sharemybike
 
-// Importa Bundle para estado del fragment.
+// Importa Bundle, que sirve para guardar/restaurar estado.
 import android.os.Bundle
 
-// Importa Fragment para crear una pantalla modular dentro de una Activity.
+// Importa las clases necesarias para crear y mostrar pantallas (Fragments).
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-// Importa LayoutInflater para inflar layouts XML.
-import android.view.LayoutInflater
-
-// Importa View (base de cualquier componente visual).
-import android.view.View
-
-// Importa ViewGroup (contenedor padre del layout del fragment).
-import android.view.ViewGroup
-
-// Importa CalendarView, el widget de calendario del sistema.
-import android.widget.CalendarView
-
-// Importa TextView para mostrar texto.
-import android.widget.TextView
-
-// Importa Calendar para manejar fechas.
-import java.util.Calendar
-
-// Importa Locale para formatear texto según idioma/región del dispositivo.
-import java.util.Locale
-
-// Importa Button (aunque aquí finalmente no se usa).
-import android.widget.Button
-
-// Importa findNavController para navegar entre fragments mediante Navigation Component.
+// Importa Navigation Component para poder moverse entre pantallas.
 import androidx.navigation.fragment.findNavController
 
-// Importa BikesContent (aunque aquí no se usa actualmente para guardar selectedDate).
-import com.jmc01.sharemybike.ui.theme.BikesContent
+// Importa la clase de View Binding generada automáticamente
+// a partir del archivo fragment_first.xml.
+import com.jmc01.sharemybike.databinding.FragmentFirstBinding
 
-// Declara el fragment donde el usuario selecciona una fecha en un CalendarView.
+// Importa Calendar para trabajar con fechas.
+import java.util.Calendar
+
+// Importa Locale para mostrar el texto según el idioma del móvil.
+import java.util.Locale
+
+// Declara la clase FirstFragment.
+// Un Fragment es una pantalla que se muestra dentro de una Activity.
 class FirstFragment : Fragment() {
 
-    // Declara un TextView que se inicializará más tarde (lateinit) cuando la vista exista.
-    private lateinit var txtDate: TextView
+    // _binding es una variable que guarda la conexión con el layout.
+    // Es nullable porque la vista puede no existir todavía.
+    private var _binding: FragmentFirstBinding? = null
 
-    // Crea e infla el layout del fragment.
+    // binding es una forma cómoda y segura de usar _binding.
+    // El !! indica que solo se usará cuando la vista exista.
+    private val binding get() = _binding!!
+
+    // Este método se llama cuando Android necesita crear la pantalla.
     override fun onCreateView(
-        // inflater permite inflar XML.
-        inflater: LayoutInflater,
-        // container es el contenedor padre.
-        container: ViewGroup?,
-        // savedInstanceState estado previo.
-        savedInstanceState: Bundle?
-    ): View? {
-        // Infla el layout fragment_first.xml.
-        return inflater.inflate(R.layout.fragment_first, container, false)
+        inflater: LayoutInflater,   // Sirve para cargar el XML.
+        container: ViewGroup?,      // Contenedor padre de la vista.
+        savedInstanceState: Bundle? // Estado anterior (si existe).
+    ): View {
+        // Aquí se crea el binding a partir del layout fragment_first.xml.
+        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+
+        // Se devuelve la vista raíz del layout.
+        return binding.root
     }
 
-    // Se llama cuando la vista ya existe y puedes hacer findViewById y listeners.
+    // Este método se ejecuta cuando la vista ya está creada.
+    // Aquí es donde se ponen listeners y lógica.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // Llama al comportamiento base.
+        // Llama al método de la clase padre.
         super.onViewCreated(view, savedInstanceState)
 
-        // Busca el CalendarView del layout por su ID.
-        val calendarView = view.findViewById<CalendarView>(R.id.cldBike)
-
-        // Asigna a txtDate el TextView donde se mostrará la fecha seleccionada.
-        txtDate = view.findViewById<TextView>(R.id.txtDate)
-
-        // Obtiene un Calendar con la fecha actual del sistema.
+        // Obtiene la fecha actual del sistema.
         val calendar = Calendar.getInstance()
 
-        // Llama a updateDateDisplay para mostrar la fecha actual como texto inicial.
+        // Muestra la fecha actual al iniciar la pantalla.
         updateDateDisplay(
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
+            calendar.get(Calendar.YEAR),         // Año actual
+            calendar.get(Calendar.MONTH),        // Mes actual (empieza en 0)
+            calendar.get(Calendar.DAY_OF_MONTH)  // Día actual
         )
 
-        // Establece un listener: se ejecuta cuando el usuario cambia/selecciona un día en el calendario.
-        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            // Actualiza el TextView con la fecha seleccionada.
+        // Listener del CalendarView.
+        // Se ejecuta cuando el usuario selecciona una fecha.
+        binding.cldBike.setOnDateChangeListener { _, year, month, dayOfMonth ->
+
+            // Actualiza el texto con la fecha seleccionada.
             updateDateDisplay(year, month, dayOfMonth)
 
-            // Navega al destino definido en el grafo de navegación (action_FirstFragment_to_ItemFragment).
-            findNavController().navigate(R.id.action_FirstFragment_to_ItemFragment)
+            // Navega a la siguiente pantalla definida en nav_graph.xml.
+            findNavController().navigate(
+                R.id.action_FirstFragment_to_ItemFragment
+            )
         }
     }
 
-    // Función privada para actualizar el TextView txtDate con una fecha formateada.
+    // Función privada que actualiza el texto con la fecha seleccionada.
     private fun updateDateDisplay(year: Int, month: Int, dayOfMonth: Int) {
-        // Construye un string formateado con día/mes/año.
-        // (month + 1) porque CalendarView/Calendar trabajan con meses base 0 (enero = 0).
+
+        // Crea un texto con el formato día/mes/año.
+        // Se suma 1 al mes porque empieza en 0 (enero = 0).
         val dateString = String.format(
             Locale.getDefault(),
             "Fecha seleccionada: %d/%d/%d",
@@ -99,7 +92,14 @@ class FirstFragment : Fragment() {
             year
         )
 
-        // Asigna el texto formateado al TextView para que se muestre en pantalla.
-        txtDate.text = dateString
+        // Asigna el texto al TextView usando View Binding.
+        binding.txtDate.text = dateString
+    }
+
+    // Este método se llama cuando la vista se destruye.
+    // MUY IMPORTANTE: limpiar el binding para evitar errores de memoria.
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
