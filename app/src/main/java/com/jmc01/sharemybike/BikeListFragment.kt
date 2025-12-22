@@ -1,5 +1,6 @@
 package com.jmc01.sharemybike // Ajusta el nombre del paquete si es diferente
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,10 +32,51 @@ class BikeListFragment : Fragment() {
                 layoutManager = LinearLayoutManager(context)
 
                 // ⭐ PUNTO CLAVE: Inicializa el Adaptador con los datos cargados.
-                adapter = MyItemRecyclerViewAdapter(BikesContent.ITEMS)
+                adapter = MyItemRecyclerViewAdapter(BikesContent.ITEMS) { bike ->
+                    sendBikeReservationEmail(bike)
+                }
             }
         }
 
         return view
     }
+
+    private fun sendBikeReservationEmail(bike: BikesContent.Bike) {
+        val selectedDate = BikesContent.selectedDate ?: "a date to be confirmed"
+
+        val to = bike.email.trim()
+        if (to.isBlank()) {
+            android.widget.Toast.makeText(requireContext(), "La bici no tiene email", android.widget.Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val body = """
+        Dear Mr/Mrs ${bike.owner}:
+
+        I'd like to use your bike at ${bike.location} (${bike.city})
+        for the following date: $selectedDate
+
+        Can you confirm its availability?
+
+        Kindest regards
+    """.trimIndent()
+
+        val intent = android.content.Intent(android.content.Intent.ACTION_SENDTO).apply {
+            data = android.net.Uri.parse("mailto:")
+            putExtra(android.content.Intent.EXTRA_EMAIL, arrayOf(to))
+            putExtra(android.content.Intent.EXTRA_SUBJECT, "Bike Reservation Request - ${bike.city}")
+            putExtra(android.content.Intent.EXTRA_TEXT, body)
+        }
+
+        try {
+            startActivity(Intent.createChooser(intent, "Enviar email"))
+        } catch (e: Exception) {
+            android.widget.Toast.makeText(
+                requireContext(),
+                "No se puede abrir una app de correo: ${e.javaClass.simpleName}",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
 }
