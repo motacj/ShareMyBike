@@ -25,33 +25,12 @@ import androidx.activity.compose.setContent
 // Importa enableEdgeToEdge para dibujar la UI ocupando hasta bordes (status bar/navigation bar).
 import androidx.activity.enableEdgeToEdge
 
-// Importa utilidades de Compose para layouts.
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-
-// Importa Scaffold (estructura de pantalla material).
-import androidx.compose.material3.Scaffold
-
-// Importa Text (composable que muestra texto).
-import androidx.compose.material3.Text
-
-// Importa Composable annotation para funciones composables.
-import androidx.compose.runtime.Composable
-
-// Importa Modifier para modificar layouts en Compose.
-import androidx.compose.ui.Modifier
-
-// Importa Preview para vista previa en Android Studio.
-import androidx.compose.ui.tooling.preview.Preview
-
-// Importa el tema Compose de tu app.
-import com.jmc01.sharemybike.ui.theme.ShareMyBikeTheme
-
 // Importa HttpURLConnection para resolver redirecciones de URLs.
 import java.net.HttpURLConnection
 
 // Importa URL para abrir conexiones HTTP.
 import java.net.URL
+import kotlin.text.substring
 
 // Declara la Activity principal de la app.
 class MainActivity : ComponentActivity() {
@@ -78,21 +57,6 @@ class MainActivity : ComponentActivity() {
 
         // Activa edge-to-edge (UI puede dibujar bajo la status bar).
         enableEdgeToEdge()
-
-        // Define un contenido Compose (aunque luego lo sobreescribes con setContentView).
-        setContent {
-            // Aplica tu tema Compose.
-            ShareMyBikeTheme {
-                // Crea la estructura base con Scaffold.
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Llama al composable Greeting.
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-        }
 
         // Establece el layout clásico XML activity_main.xml como contenido visible de la Activity.
         setContentView(R.layout.activity_main)
@@ -160,9 +124,9 @@ class MainActivity : ComponentActivity() {
         // Si hay al menos 2 partes, asume que son lat y lon.
         if (parts.size >= 2) {
             // Latitud.
-            val lat = parts[0]
+            val lat = parts[0].substring(0,7)
             // Longitud.
-            val lon = parts[1]
+            val lon = parts[1].substring(0,7)
             // Muestra coordenadas en el TextView.
             txtGeo.text = "$lat,$lon"
         } else {
@@ -184,7 +148,7 @@ class MainActivity : ComponentActivity() {
 
         // Si es un enlace corto de Google Maps, lo resuelve (siguiendo redirección).
         if (sharedText.startsWith("https://maps.app.goo.gl")) {
-            // Llama a la función que resuelve la URL corta en un hilo secundario.
+//----------/// Llama a la función que resuelve la URL corta en un hilo secundario.
             resolveShortMapsUrl(sharedText)
         } else {
             // Si no es enlace corto, intenta extraer lat/lon directamente desde el texto.
@@ -192,7 +156,7 @@ class MainActivity : ComponentActivity() {
 
             // Si se pudo extraer, muestra latitud/longitud.
             if (latLon != null) {
-                txtGeo.text = "Latitud: ${latLon.first}\nLongitud: ${latLon.second}"
+                txtGeo.text = "Latitud: ${latLon.first.substring(0,7)}\nLongitud: ${latLon.second.substring(0,7)}"
             } else {
                 // Si no se pudo extraer, muestra mensaje de error.
                 txtGeo.text = "No se pudieron extraer coordenadas"
@@ -221,12 +185,12 @@ class MainActivity : ComponentActivity() {
                 runOnUiThread {
                     // Si hay URL redirigida…
                     if (location != null) {
-                        // Intenta extraer lat/lon de la URL final.
+//---------------------/// Intenta extraer lat/lon de la URL final.
                         val latLon = extractLatLonFromGoogleData(location)
 
                         // Si pudo extraer, muestra coordenadas.
                         if (latLon != null) {
-                            txtGeo.text = "Lat: ${latLon.first} Long: ${latLon.second}"
+                            txtGeo.text = "Lat: ${latLon.first.substring(0,7)} Long: ${latLon.second.substring(0,7)}"
                         } else {
                             // Si no pudo extraer coordenadas, muestra la redirección completa.
                             txtGeo.text = "Redirección recibida:\n$location"
@@ -268,27 +232,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-}
-
-// Función composable que muestra un texto “Hello <name>!”.
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    // Muestra el texto dentro de Compose.
-    Text(
-        // Texto que se renderiza.
-        text = "Hello $name!",
-        // Aplica el modifier (tamaño, padding, etc.).
-        modifier = modifier
-    )
-}
-
-// Vista previa en Android Studio del composable Greeting.
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    // Aplica el tema para la preview.
-    ShareMyBikeTheme {
-        // Llama a Greeting con un ejemplo.
-        Greeting("Android")
-    }
 }

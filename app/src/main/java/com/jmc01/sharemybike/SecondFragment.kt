@@ -56,7 +56,7 @@ class SecondFragment : Fragment() {
         // Asigna un listener al botón buttonSecond definido en el layout.
         binding.buttonSecond.setOnClickListener {
             // Navega a FirstFragment usando la acción definida en el grafo de navegación.
-            findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+            //findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
         }
     }
 
